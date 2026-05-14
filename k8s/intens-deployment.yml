@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intens-demo
+  labels:
+    app: intens-demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: intens-demo
+  template:
+    metadata:
+      labels:
+        app: intens-demo
+    spec:
+      containers:
+      - name: intens-demo
+        image: marinamarinkovic/intens-demo:1.0
+        ports:
+        - containerPort: 8088
