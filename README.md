@@ -1,18 +1,14 @@
-# Intens Api DevOps
-Uputstvo za izradu.
+mvn clean package
+docker build -t intens-demo:1.0 .
+docker run -d --name demo-app -p 8088:8088 intens-demo:1.0 
+docker tag intens-demo:1.0 marinamarinkovic/intens-demo:1.0
+docker push marinamarinkovic/intens-demo:1.0 
+kubectl apply -f k8s/
 
-## Koraci
-1. Forkovati repozitorijum
-2. Pokrenuti api lokalno koristeci alat po izboru (dodati env variablu PORT i dodeliti vrednost 8080 ili bilo koji drugi dostupan port)
-3. Napisati Dockerfile (5 bodova)
-4. Upraditi deploy apia na bilo koji cloud provider, moze i docker / kubernetes lokalno (5 bodova)
-5. Implemetirati CI CD koristeci GitHub Actions, potrebno je kreirati dve ci cd skripte. Prva skripta treba da se pokrece automatski prilikom kreiranja PR nad master granom i treba da izvrsi testove. 2. skripta treba da se pokrece automatski prilikom pusha na master granu i treba da izvrsava build apia, pakovanje i odlaganje docker slike na repo po zelji i zamenu stare za novu sliku na odabranom cloud provideru ili lokalu. (10 bodova)
-6. Na email poslati url vaseg git repoa kao i url otpremljenog apia na cloud provider ili lokalni url.
+Koristila sam NodePort jer je ovo demo projekat, ali mu je potrebno pristupiti, iz tog razloga je ovaj tip idealan za testiranje. U realnoj situaciji bi se koristion LoadBalancer.
 
-### Korisni Linkovi
-https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+Sto se GitHub workflow-a tice, koristila sam neke predefinisane akcije poput actions/checkout@v4, actions/setup-java@v4 i docker/login-action@v3, sto je ubrzalo i pojednostavilo pisanje koda. 
 
-### Potrebni Alati
-1. Java 8 https://www.oracle.com/java/technologies/javase/javase8-archive-downloads.html
-2. Eclipse / IntelliJ / Alat po izboru
-3. Docker https://www.docker.com/products/docker-desktop
+Zbog toga sto sam koristila Kubernetes, GitHub Actions ne bi mogao da primeni novu sliku na mom racunaru, te sam ostavila poruku u Job Summary sa uputstvom za rucnu primenu. 
+
+Postavila 2 slike na DockerHub - jednu sa GitHub hash kodom, kao i jednu sa latest kodom, kako bi se na lokalnom racunaru mogle samo pokrenuti komande iz Job Summary-ja, bez menjanja deployment fajla, u kom je podesen Allways kao imagePullPolicy. 
