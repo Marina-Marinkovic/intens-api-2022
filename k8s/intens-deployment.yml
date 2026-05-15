@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
       - name: intens-demo
-        image: marinamarinkovic/intens-demo:1.0
+        image: marinamarinkovic/intens-demo:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8088

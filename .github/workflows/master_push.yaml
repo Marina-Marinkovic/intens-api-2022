@@ -1,0 +1,50 @@
+name: Deploy on master push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 8
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Build JAR file
+        run: mvn clean package -DskipTests
+
+      - name: Set new image tag
+        run: echo "TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image (hash tag)
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/intens-demo:${{ env.TAG }} .
+
+      - name: Tag latest
+        run: docker tag ${{ secrets.DOCKER_USERNAME }}/intens-demo:${{ env.TAG }} ${{ secrets.DOCKER_USERNAME }}/intens-demo:latest
+
+      - name: Push hash image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/intens-demo:${{ env.TAG }}
+
+      - name: Push latest image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/intens-demo:latest
+
+      - name: Deployment instruction for local Kubernetes
+        run: |
+          echo "Deploy locally in the project root with:" >> $GITHUB_STEP_SUMMARY
+          echo "\`kubectl apply -f k8s/\`" >> $GITHUB_STEP_SUMMARY
+          echo "\`kubectl rollout restart deployment intens-demo\`" >> $GITHUB_STEP_SUMMARY
