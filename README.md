@@ -1,14 +1,23 @@
-mvn clean package
-docker build -t intens-demo:1.0 .
-docker run -d --name demo-app -p 8088:8088 intens-demo:1.0 
-docker tag intens-demo:1.0 marinamarinkovic/intens-demo:1.0
-docker push marinamarinkovic/intens-demo:1.0 
-kubectl apply -f k8s/
+## Odluke u toku rada
 
-Koristila sam NodePort jer je ovo demo projekat, ali mu je potrebno pristupiti, iz tog razloga je ovaj tip idealan za testiranje. U realnoj situaciji bi se koristion LoadBalancer.
+Koristila sam NodePort servis jer je u pitanju demo projekat kojem je potrebno pristupiti lokalno. Za ovakav tip aplikacije NodePort je jednostavno i praktično rešenje za testiranje. U produkcionom okruženju bi se koristio LoadBalancer.
 
-Sto se GitHub workflow-a tice, koristila sam neke predefinisane akcije poput actions/checkout@v4, actions/setup-java@v4 i docker/login-action@v3, sto je ubrzalo i pojednostavilo pisanje koda. 
+Što se GitHub Actions workflow-a tiče, koristila sam predefinisane akcije poput:
+- actions/checkout@v4
+- actions/setup-java@v4
+- docker/login-action@v3
 
-Zbog toga sto sam koristila Kubernetes, GitHub Actions ne bi mogao da primeni novu sliku na mom racunaru, te sam ostavila poruku u Job Summary sa uputstvom za rucnu primenu. 
+kako bih ubrzala i pojednostavila CI/CD pipeline.
 
-Postavila 2 slike na DockerHub - jednu sa GitHub hash kodom, kao i jednu sa latest kodom, kako bi se na lokalnom racunaru mogle samo pokrenuti komande iz Job Summary-ja, bez menjanja deployment fajla, u kom je podesen Allways kao imagePullPolicy. 
+Pošto je Kubernetes pokrenut lokalno, GitHub Actions nema direktan pristup klasteru, pa sam u Job Summary delu workflow-a ostavila uputstvo za ručnu primenu nove verzije aplikacije.
+
+Na Docker Hub su postavljene dve verzije slike:
+- verzionisana slika označena GitHub commit hash-om
+- latest tag
+
+Kubernetes deployment koristi latest tag uz imagePullPolicy: Always, kako bi lokalni klaster prilikom redeploy-a uvek povukao najnoviju verziju slike bez izmene deployment fajla.
+
+### Link
+
+Aplikaciji se može pristupiti putem:
+http://localhost:30008/
