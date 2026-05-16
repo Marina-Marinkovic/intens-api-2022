@@ -1,0 +1,42 @@
+{
+  "info": {
+    "_postman_id": "8b140f34-16a1-415a-987a-5b2c2cb54a8c",
+    "name": "Intens",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "34289138"
+  },
+  "item": [
+    {
+      "name": "praksa local",
+      "request": {
+        "method": "GET",
+        "header": [],
+		"url": {
+		  "raw": "http://localhost:8088/",
+		  "protocol": "http",
+		  "host": [
+		    "localhost"
+		  ],
+		  "port": "8088"
+		}
+      },
+      "response": []
+    },
+    {
+      "name": "praksa nodeport",
+      "request": {
+        "method": "GET",
+        "header": [],
+		"url": {
+		  "raw": "http://localhost:30008/",
+		  "protocol": "http",
+		  "host": [
+		    "localhost"
+		  ],
+		  "port": "30008"
+		}
+      },
+      "response": []
+    }
+  ]
+}
