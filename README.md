@@ -21,3 +21,5 @@ Kubernetes deployment koristi latest tag uz imagePullPolicy: Always, kako bi lok
 
 Aplikaciji se može pristupiti putem:
 http://localhost:30008/
+
+Nakon primene promena koda, može se proveriti stanje komandom "kubectl get pods".
